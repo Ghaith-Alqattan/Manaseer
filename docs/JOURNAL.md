@@ -129,8 +129,8 @@ engine mounts must be refreshed.
 
 - Real-phone test of the mobile chain and the preloader (the dev server is reachable on
   the LAN at http://172.20.10.4:3000 while running).
-- Remote repository and deploy preview URL (no remote configured yet; GitHub CLI not
-  installed on this machine).
+- Deploy preview URL. (Remote added 2026-10-22: https://github.com/Ghaith-Alqattan/Manaseer,
+  branch `main`.)
 - Form delivery (email or CRM) is a go-live item; the action validates and logs only.
 - Arabic version would need a matching Arabic typeface; Nexa has no Arabic glyphs.
 - Higgsfield balance: 12 credits. Any re-roll or new scene needs a top-up.
