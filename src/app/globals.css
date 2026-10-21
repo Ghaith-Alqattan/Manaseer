@@ -1,26 +1,193 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+/* ------------------------------------------------------------------
+   Manaseer Group — brand tokens
+   Source of truth: docs/BRAND.md (extracted from manaseergroup.com)
+   Raw palette lives on :root; semantic roles are mapped below and
+   re-mapped for dark surfaces. Components use the semantic names only.
+   ------------------------------------------------------------------ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Navy family (logo outer gradient stop -> primary brand navy) */
+  --brand-navy-950: #00216a;
+  --brand-navy-900: #00266e;
+  --brand-navy-800: #052b76;
+  --brand-navy-700: #2a3886;
+  --brand-navy-600: #095186;
+
+  /* Blue family (logo inner gradient stop -> link blue) */
+  --brand-blue-700: #0074a5;
+  --brand-blue-600: #007cb4;
+  --brand-blue-500: #008abe;
+
+  /* Cyan accent (signature colour of the current site) */
+  --brand-cyan-500: #00b7e5;
+  --brand-cyan-300: #35c3e7;
+  --brand-cyan-100: #afdefa;
+
+  /* Neutrals */
+  --brand-ink-900: #231f20;
+  --brand-ink-700: #626365;
+  --brand-ink-500: #707070;
+  --brand-ink-300: #acacac;
+  --brand-ink-100: #f2f2f2;
+  --brand-paper: #ffffff;
+
+  /* Limestone: the material of every rendered scene and of Amman itself */
+  --brand-stone-100: #f3efe6;
+  --brand-stone-200: #e8e2d4;
+  --brand-stone-400: #b8b4ac;
+
+  /* Semantic roles — light surfaces */
+  --bg: var(--brand-paper);
+  --bg-elevated: var(--brand-ink-100);
+  --fg: var(--brand-ink-900);
+  --fg-muted: var(--brand-ink-700);
+  --primary: var(--brand-navy-700);
+  --primary-fg: var(--brand-paper);
+  --accent: var(--brand-cyan-500);
+  --accent-fg: var(--brand-navy-950);
+  --line: color-mix(in oklab, var(--brand-ink-900) 12%, transparent);
+  --ring: var(--brand-cyan-500);
+
+  color-scheme: light;
+}
+
+/* Dark surface: apply .theme-dark to any section (hero, footer) or data-theme="dark" on <html> */
+:root[data-theme="dark"],
+.theme-dark {
+  --bg: #03102e;
+  --bg-elevated: #071a44;
+  --fg: #eef3fb;
+  --fg-muted: #9fb0cf;
+  --primary: var(--brand-cyan-500);
+  --primary-fg: var(--brand-navy-950);
+  --accent: var(--brand-cyan-300);
+  --accent-fg: var(--brand-navy-950);
+  --line: color-mix(in oklab, #ffffff 14%, transparent);
+  color-scheme: dark;
+}
+
+/* Light stone surface for the sections between the dark bands */
+.theme-stone {
+  --bg: var(--brand-stone-200);
+  --bg-elevated: var(--brand-stone-100);
+  --fg: var(--brand-navy-950);
+  --fg-muted: #4b5470;
+  --primary: var(--brand-navy-700);
+  --primary-fg: var(--brand-paper);
+  --accent: var(--brand-blue-700);
+  --accent-fg: var(--brand-paper);
+  --line: color-mix(in oklab, var(--brand-navy-950) 16%, transparent);
+  --ring: var(--brand-blue-700);
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-stone-100: var(--brand-stone-100);
+  --color-stone-200: var(--brand-stone-200);
+  --color-stone-400: var(--brand-stone-400);
+  --color-navy-950: var(--brand-navy-950);
+  --color-navy-900: var(--brand-navy-900);
+  --color-navy-800: var(--brand-navy-800);
+  --color-navy-700: var(--brand-navy-700);
+  --color-navy-600: var(--brand-navy-600);
+  --color-blue-700: var(--brand-blue-700);
+  --color-blue-600: var(--brand-blue-600);
+  --color-blue-500: var(--brand-blue-500);
+  --color-cyan-500: var(--brand-cyan-500);
+  --color-cyan-300: var(--brand-cyan-300);
+  --color-cyan-100: var(--brand-cyan-100);
+  --color-ink-900: var(--brand-ink-900);
+  --color-ink-700: var(--brand-ink-700);
+  --color-ink-500: var(--brand-ink-500);
+  --color-ink-300: var(--brand-ink-300);
+  --color-ink-100: var(--brand-ink-100);
+  --color-paper: var(--brand-paper);
+
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-line: var(--line);
+  --color-ring: var(--ring);
+
+  --font-display: var(--font-nexa), "Nexa", "Montserrat", system-ui, sans-serif;
+  --font-sans: var(--font-helvetica), "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --breakpoint-3xl: 1600px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: auto; /* Lenis owns scrolling */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--accent); color: var(--accent-fg); }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* scroll-world engine theme (engine defaults live in @layer sw, so these unlayered
+   rules win). --sw-bg must equal the scene stills' background for seamless posters. */
+.world-theme {
+  --sw-bg: #03102e;
+  --sw-ink: #eef3fb;
+  --sw-ink-soft: #9fb0cf;
+  --sw-accent: var(--brand-cyan-500);
+  --sw-font-display: var(--font-display);
+  --sw-font-body: var(--font-sans);
+  background: var(--sw-bg);
+  color: var(--sw-ink);
+}
+
+@utility container-site {
+  width: min(100% - 2rem, 90rem);
+  margin-inline: auto;
+  @media (min-width: 48rem) { width: min(100% - 4rem, 90rem); }
+}
+
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-size: clamp(2.75rem, 7vw, 7.5rem);
+}
+
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
 }

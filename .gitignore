@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scroll-world raw renders and job logs (large / regenerable)
+/world/video/raw/
+/world/video/frames/
+/world/logs/

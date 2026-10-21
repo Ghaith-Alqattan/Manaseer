@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Reference material copied from the client's current site, not our code.
+    "docs/extraction/**",
+    // Vendored scroll-world scrub engine (vanilla JS, kept byte-close to upstream).
+    "src/components/world/scrub-engine.js",
   ]),
 ]);
 
