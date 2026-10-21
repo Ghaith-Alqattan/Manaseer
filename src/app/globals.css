@@ -117,7 +117,7 @@
   --color-ring: var(--ring);
 
   --font-display: var(--font-nexa), "Nexa", "Montserrat", system-ui, sans-serif;
-  --font-sans: var(--font-helvetica), "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), "Manrope", "Helvetica Neue", Arial, system-ui, sans-serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
@@ -167,6 +167,35 @@
   --sw-font-body: var(--font-sans);
   background: var(--sw-bg);
   color: var(--sw-ink);
+}
+/* Route rail chip: navy pill, light text (engine default is a frosted white pill) */
+.world-theme .sw-route__label {
+  background: var(--brand-navy-700);
+  color: #ffffff;
+  border-color: color-mix(in srgb, #ffffff 22%, transparent);
+  backdrop-filter: none;
+}
+/* Finale CTAs: white primary on the dark scene, outlined secondary */
+.world-theme .sw-btn--primary { background: #ffffff; color: var(--brand-navy-900); }
+.world-theme .sw-btn--primary:hover { background: var(--brand-cyan-100); }
+.world-theme .sw-btn--ghost { color: #ffffff; border-color: color-mix(in srgb, #ffffff 45%, transparent); }
+.world-theme .sw-btn--ghost:hover { border-color: #ffffff; }
+.world-theme .sw-copy__cta { margin-top: 22px; }
+.world-theme .sw-copy__body { margin-top: 14px; }
+.world-theme .sw-copy__tag { background: color-mix(in srgb, var(--brand-navy-700) 70%, transparent); color: #ffffff; }
+/* Keep the copy block inside short viewports (the finale carries body + two buttons) */
+@media (max-height: 760px) {
+  .world-theme .sw-copy__title { font-size: clamp(1.6rem, 3.6vw, 2.6rem); }
+  .world-theme .sw-copy__body { font-size: 0.95rem; line-height: 1.45; }
+  .world-theme .sw-btn { padding: 10px 18px; font-size: 0.88rem; }
+}
+/* Hold the page still while the preloader is up */
+html.is-preloading { overflow: hidden; }
+/* Preloader water surface: the wave svg is 200% wide and holds two periods, so a
+   half-width shift loops seamlessly */
+@keyframes wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @utility container-site {

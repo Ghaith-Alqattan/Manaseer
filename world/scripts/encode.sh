@@ -8,8 +8,8 @@ ORDER="rock mix field flow future"
 
 enc() {
   ffmpeg -v error -y -i "$1" -an -vf "unsharp=5:5:0.8:5:5:0.0" \
-    -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p \
-    -g 8 -keyint_min 8 -sc_threshold 0 -movflags +faststart "$2"
+    -c:v libx264 -preset slow -crf 22 -pix_fmt yuv420p \
+    -g 3 -keyint_min 3 -bf 0 -tune fastdecode -sc_threshold 0 -movflags +faststart "$2"
   echo "enc $(basename "$2") $(du -h "$2" | cut -f1)"
 }
 

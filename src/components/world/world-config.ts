@@ -3,6 +3,9 @@ import type { WorldConfig } from "./scrub-engine";
 
 const vid = (name: string) => `/world/vid/${name}.mp4`;
 const still = (name: string) => `/world/${name}.webp`;
+/** Native 9:16 chain for phones (world/scripts/mobile.sh): 720-wide, GOP 4, own posters. */
+const vidM = (name: string) => `/world/vid/${name}-m.mp4`;
+const stillM = (name: string) => `/world/${name}-m.webp`;
 
 /**
  * The five-scene journey (see docs/SCENARIO.md). Order matters: connectors[i] joins
@@ -12,17 +15,22 @@ export const worldConfig: WorldConfig = {
   hint: "scroll to fly in",
   nav: false,
   atmosphere: true,
-  diveScroll: 1.3,
-  connScroll: 0.9,
-  crossfade: 0.12,
+  // Pacing: more scroll per clip = slower, calmer flight. Connectors get almost as much
+  // room as dives so the hop between islands never feels like a jump cut.
+  diveScroll: 1.5,
+  connScroll: 1.25,
+  crossfade: 0.14,
+  smoothing: 0.14,
   sections: [
     {
       id: "rock",
       label: "The Rock",
       still: still("rock"),
+      stillMobile: stillM("rock"),
       clip: vid("rock"),
+      clipMobile: vidM("rock"),
       accent: brand.colors.cyan500,
-      scroll: 1.7,
+      scroll: 1.9,
       linger: 0.4,
       eyebrow: "From the ground up",
       title: "It starts in the rock.",
@@ -33,7 +41,9 @@ export const worldConfig: WorldConfig = {
       id: "mix",
       label: "The Mix",
       still: still("mix"),
+      stillMobile: stillM("mix"),
       clip: vid("mix"),
+      clipMobile: vidM("mix"),
       accent: brand.colors.cyan500,
       eyebrow: "Building materials",
       title: "Cement, concrete, and the roads between.",
@@ -44,7 +54,9 @@ export const worldConfig: WorldConfig = {
       id: "field",
       label: "The Field",
       still: still("field"),
+      stillMobile: stillM("field"),
       clip: vid("field"),
+      clipMobile: vidM("field"),
       accent: brand.colors.cyan500,
       eyebrow: "Life sciences",
       title: "Feeding the land.",
@@ -55,7 +67,9 @@ export const worldConfig: WorldConfig = {
       id: "flow",
       label: "The Flow",
       still: still("flow"),
+      stillMobile: stillM("flow"),
       clip: vid("flow"),
+      clipMobile: vidM("flow"),
       accent: brand.colors.cyan500,
       eyebrow: "Energy & mobility",
       title: "Keeping Jordan moving.",
@@ -66,19 +80,22 @@ export const worldConfig: WorldConfig = {
       id: "future",
       label: "The Future",
       still: still("future"),
+      stillMobile: stillM("future"),
       clip: vid("future"),
+      clipMobile: vidM("future"),
       accent: brand.colors.cyan300,
-      scroll: 1.8,
+      scroll: 2.0,
       linger: 0.5,
       eyebrow: "Vision",
       title: "Building the Future.",
-      body: `20+ companies, 10,000 people, USD 3 billion invested. "${brand.chairmanQuote}." ${brand.chairman}, Chairman.`,
+      body: `“${brand.chairmanQuote}.” ${brand.chairman}, Chairman.`,
       tags: [],
       cta: {
-        primary: { label: "Talk to us", href: "#contact" },
+        primary: { label: "Contact us", href: "#contact" },
         secondary: { label: "Our sectors", href: "#sectors" },
       },
     },
   ],
   connectors: [vid("conn1"), vid("conn2"), vid("conn3"), vid("conn4")],
+  connectorsMobile: [vidM("conn1"), vidM("conn2"), vidM("conn3"), vidM("conn4")],
 };

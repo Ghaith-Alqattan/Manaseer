@@ -1,77 +1,128 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
 import { brand } from "@/lib/brand";
+import { gsap, useGSAP } from "@/lib/gsap";
 
 const VISION =
   "To be the top player in each sector we are in, guided by our values, we will lead the way to deliver economic prosperity, improve social wellbeing and a healthy environment for future generations.";
 
+/** Real photography: all six are the client's own site images. */
+const PHOTOS: Record<string, { src: string; alt: string; credit?: string }> = {
+  "building-materials": { src: "/images/sectors/building-materials.webp", alt: "A construction site at dusk with tower cranes and concrete pumps" },
+  "industrial-minerals": { src: "/images/sectors/industrial-minerals.webp", alt: "Aerial view of an industrial complex in the Jordanian desert" },
+  "life-sciences": { src: "/images/sectors/life-sciences.webp", alt: "A seedling growing in dark soil" },
+  "energy-mobility": { src: "/images/sectors/energy-mobility.webp", alt: "A Manaseer Oil & Gas fuel station" },
+  "commercial-services": { src: "/images/sectors/commercial-services.webp", alt: "The lattice facade of Manaseer Group headquarters" },
+  vision: { src: "/images/sectors/vision.webp", alt: "The Amman skyline with the Jordanian flag" },
+};
+
 /**
- * A ledger, not a card grid: six sectors in the order the camera visited them, each with
- * its company roster set as running text. The swatch beside each row is a crop from that
- * sector's rendered scene, so the page's imagery is the world the visitor just flew through.
+ * Six full-viewport slides, pinned, each sliding in from the right over the previous one
+ * as the visitor scrolls (one viewport of scroll per slide). Reduced motion: a plain
+ * vertical stack, no pin.
  */
 export function Sectors() {
+  const root = useRef<HTMLElement>(null);
   const total = brand.sectors.reduce((n, s) => n + s.companies.length, 0);
+  const count = brand.sectors.length;
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const slides = gsap.utils.toArray<HTMLElement>("[data-slide]", root.current);
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: () => `+=${(slides.length - 1) * window.innerHeight}`,
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+        slides.forEach((slide, i) => {
+          if (i === 0) return;
+          const photo = slide.querySelector<HTMLElement>("[data-photo]");
+          tl.fromTo(slide, { xPercent: 100 }, { xPercent: 0, ease: "none", duration: 1 }, i - 1);
+          if (photo) tl.fromTo(photo, { scale: 1.12, xPercent: -6 }, { scale: 1, xPercent: 0, ease: "none", duration: 1 }, i - 1);
+          // The slide underneath drifts left a little as it is covered, for depth.
+          tl.to(slides[i - 1], { xPercent: -12, ease: "none", duration: 1 }, i - 1);
+        });
+      });
+    },
+    { scope: root },
+  );
+
   return (
     <section
+      ref={root}
       id="sectors"
       aria-labelledby="sectors-title"
-      className="theme-stone bg-bg text-fg"
+      className="relative h-dvh w-full overflow-hidden bg-[#03102e] text-white motion-reduce:h-auto"
     >
-      <div className="container-site py-28 md:py-40">
-        <header className="max-w-3xl">
-          <p className="eyebrow mb-6">What we build, mine, grow and move</p>
-          <h2
-            id="sectors-title"
-            className="font-display text-[clamp(2.25rem,5.2vw,4.75rem)] font-bold leading-[0.98] tracking-[-0.02em]"
+      <h2 id="sectors-title" className="sr-only">
+        Six sectors, {total} companies
+      </h2>
+      {brand.sectors.map((s, i) => {
+        const photo = PHOTOS[s.slug];
+        return (
+          <article
+            key={s.slug}
+            data-slide
+            style={{ zIndex: i + 1 }}
+            className="absolute inset-0 h-dvh w-full overflow-hidden motion-reduce:relative motion-reduce:h-auto motion-reduce:min-h-dvh"
           >
-            Six sectors.
-            <br />
-            {total} companies.
-          </h2>
-        </header>
-
-        <ol className="mt-20 border-t border-line">
-          {brand.sectors.map((s) => (
-            <li
-              key={s.slug}
-              className="grid grid-cols-[4.5rem_1fr] gap-x-5 gap-y-3 border-b border-line py-8 md:grid-cols-[7rem_minmax(0,18rem)_1fr] md:gap-x-10 md:py-10"
-            >
+            <div data-photo className="absolute inset-0 will-change-transform">
               <Image
-                src={`/world/crops/${s.slug}.webp`}
-                alt=""
-                width={800}
-                height={800}
-                sizes="(min-width: 768px) 7rem, 4.5rem"
-                className="aspect-square w-full rounded-sm object-cover"
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                sizes="100vw"
+                priority={i === 0}
+                className="object-cover"
               />
-              <h3 className="self-start font-display text-2xl font-bold leading-tight tracking-[-0.01em] md:text-[1.75rem]">
+            </div>
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,color-mix(in_oklab,#03102e_90%,transparent)_0%,color-mix(in_oklab,#03102e_55%,transparent)_48%,color-mix(in_oklab,#03102e_15%,transparent)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,color-mix(in_oklab,#03102e_85%,transparent)_100%)]" />
+            {photo.credit && (
+              <p className="absolute bottom-[calc(0.75rem+env(safe-area-inset-bottom))] right-4 z-10 text-[0.65rem] tracking-wide text-white/55">
+                {photo.credit}
+              </p>
+            )}
+
+            <div className="container-site relative flex h-full flex-col justify-end pb-[calc(3rem+env(safe-area-inset-bottom))] md:justify-center md:pb-0">
+              <p className="font-display text-xs tracking-[0.22em] text-cyan-300">
+                {String(i + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
+                <span className="mx-3 text-white/40">·</span>
+                <span className="uppercase">{s.companies.length > 0 ? `${s.companies.length} companies` : "Group vision"}</span>
+              </p>
+              <h3 className="mt-4 max-w-4xl font-display text-[clamp(2.4rem,7vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.02em] text-balance">
                 {s.name}
-                {s.companies.length > 0 && (
-                  <span className="mt-1 block font-sans text-sm font-normal tracking-normal text-fg-muted">
-                    {s.companies.length} companies
-                  </span>
-                )}
               </h3>
-              <p className="col-span-2 self-start text-[1.0625rem] leading-relaxed text-fg md:col-span-1 md:text-lg">
+              <p className="mt-6 max-w-2xl text-[1.05rem] leading-relaxed text-white/85 md:text-xl">
                 {s.companies.length > 0 ? (
-                  s.companies.map((c, i) => (
+                  s.companies.map((c, k) => (
                     <span key={c}>
                       {c}
-                      {i < s.companies.length - 1 && (
-                        <span aria-hidden className="mx-2 text-stone-400">
+                      {k < s.companies.length - 1 && (
+                        <span aria-hidden className="mx-2 text-cyan-300/70">
                           /
                         </span>
                       )}
                     </span>
                   ))
                 ) : (
-                  <span className="text-fg-muted">{VISION}</span>
+                  VISION
                 )}
               </p>
-            </li>
-          ))}
-        </ol>
-      </div>
+            </div>
+          </article>
+        );
+      })}
     </section>
   );
 }

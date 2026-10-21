@@ -57,9 +57,12 @@ get extra scroll distance and a mid-scene linger; 2 to 5 stay brisk.
 - Header: white logo, "Sectors / At a glance / Contact". Persistent quiet "Order now" entry.
 
 ## Mobile
-Recommendation for the pitch: **desktop only**, with the engine's phone hardening (stills as
-posters, graceful degradation). Add the native 9:16 chain after the client signs; it roughly
-doubles the render spend.
+Rendered 2026-10-22 as a **native 9:16 chain** (`world/scripts/mobile.sh`): each still was
+knocked out and recomposed on a 1080x1920 navy-gradient canvas (`make_canvases.py`), five
+portrait dives at 5 s (7.5 credits each, to fit the balance) and four portrait connectors at
+5 s, all Kling 3.0 std at 720x1280. Seam frames come from the portrait renders only. Encoded
+720 wide, GOP 4, crf 23 as `public/world/vid/<scene>-m.mp4` with posters `<scene>-m.webp`
+(each portrait dive's frame 0). The engine serves them on coarse-pointer or <=860 px viewports.
 
 ## Render plan and budget (Front-end Artist)
 

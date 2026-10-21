@@ -2,8 +2,7 @@ import { Logo } from "@/components/brand/logo";
 
 /**
  * Brand header pinned to the top of the world (absolute, not fixed): it greets on landing
- * and scrolls away with the first scene, so it never collides with the sections' copy.
- * The finale CTAs and the footer carry navigation from there on.
+ * and scrolls away with the first scene. SiteNav takes over once the world is passed.
  */
 export function WorldChrome() {
   return (
@@ -17,7 +16,7 @@ export function WorldChrome() {
           className="pointer-events-auto hidden gap-8 font-display text-xs uppercase tracking-[0.2em] text-white md:flex"
         >
           <a href="#sectors" className="transition-opacity hover:opacity-70">Sectors</a>
-          <a href="#contact" className="transition-opacity hover:opacity-70">Order now</a>
+          <a href="#contact" className="transition-opacity hover:opacity-70">Contact us</a>
         </nav>
       </div>
     </header>

@@ -101,14 +101,14 @@ Tajawal, Cairo) and set `dir="rtl"` per locale.
 
 ## 4. Imagery and motion on the current site
 
-| Image | Local copy | Dimensions | Use |
+| Image | Local copy | Dimensions | Use on the old site |
 |---|---|---|---|
-| HQ glass facade, low angle | `public/images/site-reference/hq-building.jpg` | 1872 x 1080 | About page hero |
-| "Future generations" facade | `hero-building-future.jpg` | 1620 x 1080 | Home hero slide |
+| Construction site at dusk, cranes and concrete pumps | `public/images/site-reference/construction-site-cranes.jpg` | 1872 x 1080 | About page hero |
+| HQ lattice facade, low angle | `hero-building-future.jpg` | 1620 x 1080 | Home hero slide |
 | Amman skyline with flag | `amman-skyline-quote.jpg` | 1620 x 1080 | Chairman quote band |
-| Quarry / desert aerial | `sector-industrial-minerals.jpg` | 1920 x 936 | Sector card |
-| Grey concrete texture | `sector-building-materials.jpg` | 1920 x 936 | Sector card (default) |
-| Green fields aerial | `sector-energy-mobility.jpg` | 1920 x 936 | Sector card |
+| Industrial complex aerial, desert | `industrial-complex-aerial.jpg` | 1920 x 936 | Sector card |
+| Seedling in soil | `seedling-soil.jpg` | 1920 x 936 | Sector card (default) |
+| Manaseer Oil & Gas station | `manaseer-fuel-station.jpg` | 1920 x 936 | Sector card |
 
 Photography style: wide architectural and aerial shots, cool blue sky, heavy navy gradient
 overlays. Motion: Flickity carousel, ScrollReveal fades, `css3-animate-it` pulse on the slogan,
@@ -133,3 +133,6 @@ star, money bag, buildings, people) and `public/brand/icons/` (nav + social).
 - CSS: `src/app/globals.css` (`--brand-*` raw palette, semantic `--bg/--fg/--primary/--accent`, Tailwind `@theme` colours `navy-700`, `cyan-500`, etc.)
 - TS: `src/lib/brand.ts` (for Three.js materials and copy)
 - Fonts: `src/lib/fonts.ts` exposes `--font-nexa` and `--font-helvetica`; Tailwind classes `font-display` / `font-sans`.
+
+## 7. Sector slide photos
+All six slides in `public/images/sectors/` are 1920-wide webp derivatives of the client's own site photos above (no third-party imagery).

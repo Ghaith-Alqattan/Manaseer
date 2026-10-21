@@ -34,6 +34,26 @@ else:
 ' "$1"
 }
 
+# Recover a job whose create/wait call died client-side (Cloudflare HTML instead of JSON):
+# the job usually exists server-side. Finds the newest job with this exact prompt, waits
+# for it, and writes its JSON to outJson. Prints the job id on success.
+recover_job() { # promptFile outJson
+  local id
+  higgsfield generate list --json 2>/dev/null > "$L/_jobs.json"
+  id=$(python -I -c '
+import json, sys
+want = open(sys.argv[2], encoding="utf-8").read().strip()
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+jobs = d if isinstance(d, list) else (d.get("results") or d.get("jobs") or d.get("items") or [])
+for j in jobs:
+    if (j.get("params", {}).get("prompt") or "").strip() == want:
+        print(j["id"]); break
+' "$L/_jobs.json" "$1")
+  [ -z "$id" ] && return 1
+  higgsfield generate wait "$id" --timeout 20m --interval 10s --quiet --json > "$2" 2>/dev/null
+  [ -n "$(json_url "$2")" ] && echo "$id"
+}
+
 credits() { higgsfield workspace status 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)? credits' | grep -oE '^[0-9.]+'; }
 
 stamp() { date +"%H:%M:%S"; }

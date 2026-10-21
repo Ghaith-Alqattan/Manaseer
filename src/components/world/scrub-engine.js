@@ -202,7 +202,9 @@ function mountScrollWorld(container, config) {
     s.loading = true;
     // Serve the lighter mobile encode on phones when one was provided.
     const url = (isMobile() && s.clipM) ? s.clipM : s.clip;
-    fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')))
+    // A preloader may hand us the clip as a Blob already (config.preloaded: Map<url, Blob>).
+    const pre = config.preloaded && config.preloaded.get ? config.preloaded.get(url) : null;
+    (pre ? Promise.resolve(pre) : fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404'))))
       .then(blob => {
         const v = document.createElement('video');
         v.className = 'sw-scene__video';
@@ -271,7 +273,9 @@ function mountScrollWorld(container, config) {
   }
 
   function raf() {
-    const eps = isMobile() ? 0.02 : 0.008;   // coarser seek step on phones = fewer decodes
+    // Never issue a seek smaller than about one frame (24 fps = 0.042 s): sub-frame seeks
+    // cost a decode each and are the main source of scrub jank. Phones get a wider step.
+    const eps = isMobile() ? 0.055 : 0.036;
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (!s.hasClip || !s.ready || !s.video) continue;
@@ -280,7 +284,7 @@ function mountScrollWorld(container, config) {
       // cur keeps lerping, so we snap to the latest target the moment it's free.
       if (s.video.seeking) continue;
       if (!s.visible && Math.abs(s.cur - s.target) < 0.002) continue;
-      s.cur += (s.target - s.cur) * (reduce ? 1 : 0.18);
+      s.cur += (s.target - s.cur) * (reduce ? 1 : (config.smoothing || 0.18));
       const dur = s.video.duration || 1;
       const t = clamp(s.cur, 0, 0.999) * dur;
       if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch (e) {} }

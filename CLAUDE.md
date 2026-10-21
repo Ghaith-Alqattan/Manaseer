@@ -26,7 +26,7 @@ scene earns it), Phosphor icons, zod. pnpm. See `docs/ARCHITECTURE.md` for the r
 ## Brand (source of truth: docs/BRAND.md)
 - Mark: 8-blade pinwheel, radial gradient #007cb4 -> #052b76. Logos in `public/brand/`.
 - Palette: navy `#2a3886` (primary), deep navy `#00216a`, cyan `#00b7e5` (accent), blue `#008abe`, ink `#231f20`.
-- Type: **Nexa** for display (300/400/700), **Helvetica Neue** for body (300/400/500/700), self-hosted in `src/fonts/`. No Arabic glyphs in either.
+- Type: **Nexa** for display (300/400/700, self-hosted in `src/fonts/`), **Manrope** for body (Google). Helvetica Neue files are kept for reference only. No Arabic glyphs in Nexa.
 - Tagline: "Building the Future". Numbers: 1999, 20+ companies, 10,000 people, USD 3B, 6 sectors.
 - Use tokens (`bg-bg`, `text-accent`, `bg-navy-700`) not raw hex in components.
 
@@ -35,9 +35,10 @@ scene earns it), Phosphor icons, zod. pnpm. See `docs/ARCHITECTURE.md` for the r
 - Import GSAP only from `@/lib/gsap`. Every animation has a reduced-motion branch.
 - 3D only through `SceneCanvas`. Models go in `public/models/`.
 - Lenis owns scroll: `getLenis()?.scrollTo()`.
-- Copy is real Manaseer content from `src/lib/brand.ts`; no lorem ipsum.
+- Copy is real Manaseer content from `src/lib/brand.ts`; no lorem ipsum. The CTA wording is "Contact us"; never "Order now".
 - Before finishing a section: `pnpm exec tsc --noEmit && pnpm lint && pnpm build`, then look at it in the browser pane (`dev` in `.claude/launch.json`) at desktop and 375 px.
 - Do not commit unless asked.
+- **Never rotate or spin the logo or wordmark** (user rule, 2026-10-22). Motion belongs to the 3D pinwheel object (`components/three/pinwheel.tsx`), never to the brand lockup or the SVG mark.
 
 ## External services
 - Higgsfield CLI 1.2.2 is installed and authenticated on the user's second account (workspace "Private" `caf619be-07f0-4c98-b90b-6606ef76ee99`, starter plan, 217 credits on 2026-10-21, selected). `higgsfield generate cost <model> ...` estimates for free; on this plan: gpt_image_2 still 6.5, kling3_0 std 5s/8s/10s = 7.5/12/15, seedance_2_0 36 to 96, seedance_2_0_mini unavailable, Kling pro/4k need a Pro plan.

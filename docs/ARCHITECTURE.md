@@ -26,8 +26,8 @@ src/
     forms/             OrderForm (client, useActionState)
     motion/            GSAP client islands: Reveal, Counter
     providers/         SmoothScroll (Lenis + ScrollTrigger sync)
-    sections/          Glance (statement band), Sectors (ledger), Contact (form + footer); Hero kept for later
-    three/             SceneCanvas (dynamic, ssr:false) -> CanvasRoot -> scenes
+    sections/          Glance (statement band), Sectors (pinned full-viewport slides), Contact (form, socials, footer)
+    three/             SceneCanvas (dynamic, ssr:false) -> CanvasRoot; FanScene/FanBackdrop (contact backdrop), HeroScene (unused)
     world/             scroll-world engine, wrapper, config, chrome header
   fonts/               woff2 brand fonts (served by next/font)
   lib/
@@ -55,18 +55,25 @@ design-system/
 5. **Lenis owns scroll.** Do not set `scroll-behavior: smooth` or call `window.scrollTo`; use `getLenis()?.scrollTo()`.
 6. **Dark surfaces are opt-in** with the `.theme-dark` class on a section; the semantic tokens flip underneath.
 7. **No polling, no `useEffect` for derived state.** The only `useEffect` in the shell is the Lenis lifecycle.
-8. **Assets:** images through `next/image`, fonts through `next/font`, videos (scroll-world scrub chain) as blob-loaded `<video>` elements with still posters.
+8. **Assets:** images through `next/image`, fonts through `next/font` (Nexa local, Manrope from Google), videos (scroll-world scrub chain) preloaded into memory and played as blob `<video>` elements with still posters. Clips are encoded GOP 3, no B-frames, fastdecode tuning: larger files, cheap seeks.
 
 ## Scroll-world (the home page)
 The home route is the scroll-scrubbed camera flight from `docs/SCENARIO.md`:
-- `src/components/world/scrub-engine.js` — vendored engine (ES-module tail added, otherwise upstream).
-- `src/components/world/world.tsx` — client wrapper; mounts the engine, clears it on unmount.
+- `src/components/world/scrub-engine.js` — vendored engine. Local patches: `config.preloaded`
+  (Map of URL to Blob, skips the engine's own fetch), `config.smoothing`, and a seek step of
+  about one frame (0.036 s desktop, 0.055 s mobile) so sub-frame seeks no longer cost a decode each.
+- `src/components/world/preload.ts` + `world-preloader.tsx` — fetch every clip for the device
+  with byte progress behind a full-screen loader, then mount the engine with the blobs.
+- `src/components/world/world.tsx` — client wrapper; preloads, mounts the engine, clears it on unmount.
+- `src/components/site-nav.tsx` — fixed nav that slides in at `#after-world` and hides when
+  scrolling back into the world.
 - `src/components/world/world-config.ts` — the five sections, copy, pacing, connectors.
 - `.world-theme` in `globals.css` maps brand tokens onto the engine's `--sw-*` variables.
 - Render chain: `world/scripts/` (prompts -> stills -> dives -> seam frames -> connectors -> encode -> QA).
 The engine reads `window.scrollY` from page top, so the world must be the first thing on the
-route. Lenis drives it through native scroll events. Mobile currently gets the same 3:2 clips
-cover-fitted; a native 9:16 chain is a separate render (about 2x credits).
+route. Lenis drives it through native scroll events. Phones get the native 9:16 chain
+(`clipMobile`, `connectorsMobile`, `stillMobile` in `world-config.ts`; rendered by
+`world/scripts/mobile.sh`), chosen by the engine on coarse-pointer or narrow viewports.
 Three.js stays available in `components/three` for later pages but is not on the home route.
 
 ## Verification

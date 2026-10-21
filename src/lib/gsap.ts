@@ -15,4 +15,9 @@ gsap.defaults({ ease: "power3.out", duration: 1 });
 
 ScrollTrigger.config({ ignoreMobileResize: true });
 
+// Dev only: lets the browser console inspect triggers (ScrollTrigger.getAll()).
+if (process.env.NODE_ENV !== "production") {
+  (globalThis as unknown as { ScrollTrigger?: typeof ScrollTrigger }).ScrollTrigger = ScrollTrigger;
+}
+
 export { gsap, ScrollTrigger, SplitText, useGSAP };

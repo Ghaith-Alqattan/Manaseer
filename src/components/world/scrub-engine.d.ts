@@ -29,6 +29,10 @@ export type WorldConfig = {
   diveScroll?: number;
   connScroll?: number;
   crossfade?: number;
+  /** Per-frame lerp factor toward the scroll target (default 0.18; lower = softer) */
+  smoothing?: number;
+  /** Clips already fetched by a preloader, keyed by URL; the engine skips its own fetch */
+  preloaded?: Map<string, Blob>;
   sections: WorldSection[];
   /** length = sections.length - 1; null entries crossfade directly */
   connectors: (string | null)[];
